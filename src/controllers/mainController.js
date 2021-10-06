@@ -19,11 +19,11 @@ const controller = {
 	},
 	search: (req, res) => {
 		return res.render('results',{
-			products : products.filter(products => product.name.toLowerCase().include(req.query.keywords.toLowerCase())),
+			products : products.filter(product => product.name.toLowerCase().include(req.query.keywords)),
 			toThousand,
 			toDiscount,
 			keywords : req.query.keywords
-		})
+		});
 	},
 };
 

@@ -5,13 +5,13 @@ const productsFilePath = path.join(__dirname, '../data/productsDataBase.json');
 const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
 
 const toThousand = require('../utils/toThousand');
-const toDiscount = require('../utils/toDiscount')
+const toDiscount = require('../utils/toDiscount');
 
 const controller = {
 	// Root - Show all products
 	index: (req, res) => {
 
-		const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
+		const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/productsDataBase.json'), 'utf-8'));
 		return res.render('products',{
 
 			
@@ -24,7 +24,7 @@ const controller = {
 	// Detail - Detail from one product
 	detail: (req, res) => {
 
-		const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
+		const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/productsDataBase.json'), 'utf-8'));
 
 		return res.render('detail',{
 			product : products.find(product => product.id === +req.params.id),
@@ -39,6 +39,7 @@ const controller = {
 	},
 	// Create -  Method to store
 	store: (req, res) => {
+		const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/productsDataBase.json'), 'utf-8'));
 		const {name,price,discount,category,description} = req.body
 		let product = {
 			id: products[products.lenght -1].id +1,
@@ -54,19 +55,23 @@ const controller = {
 
 		fs.writeFileSync(path.join(__dirname,'..','data','productsDataBase.json'),JSON.stringify(products,null,3),'utf-8')
 	
-		res.redirect('/products')
+		res.redirect('/products/')
 	},
 
 	// Update - Form to edit
 	edit: (req, res) => {
-		// Do the magic
-		return res.render ('product-edit-form',{
+		const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/productsDataBase.json'), 'utf-8'));
+		return res.render('product-edit-form', {
 			product : products.find(product => product.id === +req.params.id)
-		})
+		});
 	},
 	// Update - Method to update
 	update: (req, res) => {
+		const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/productsDataBase.json'), 'utf-8'));
 		const {name,price,discount,category,description} = req.body
+		
+		
+		
 		let productModified = {
 			id: +req.params.id,
   			name: name.trim() ,
@@ -81,16 +86,18 @@ const controller = {
 
 		fs.writeFileSync(path.join(__dirname,'..','data','productsDataBase.json'),JSON.stringify(productsModfied,null,3),'utf-8')
 	
-		res.redirect('/products/detail/' + req.params.id)
+		return res.redirect('/products')
 	},
 
 	// Delete - Delete one product from DB
 	destroy : (req, res) => {
+
+		const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/productsDataBase.json'), 'utf-8'));
 		let productsModified = products.filter(product => product.id !== +req.params.id)
 		
-		fs.writeFileSync(path.join(__dirname,'..','data','productsDataBase.json'),JSON.stringify(productsModfied,null,3),'utf-8')
+		fs.writeFileSync(path.join(__dirname,'..','data','productsDataBase.json'),JSON.stringify(productsModified,null,3),'utf-8')
 
-		res.redirect('/products')
+		return res.redirect('/products')
 	}
 };
 
